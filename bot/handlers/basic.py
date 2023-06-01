@@ -35,6 +35,7 @@ async def send_periodic_messages(bot, chat_id):
     list_message = get_list_messages_for_today()
     logger.debug(f'Длина списка фраз на сегодня: {len(list_message)}')
     while True:
+        time.sleep(1)
         current_time = datetime.datetime.now().time()
         start_time = datetime.time(hour=9, minute=0)
         end_time = datetime.time(hour=20, minute=0)
