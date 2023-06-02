@@ -20,6 +20,7 @@ router = Router()
 
 @router.message(CommandStart(), F.from_user.id.in_(users))
 async def get_start(message: Message, bot):
+    logger.debug('Получена комманда start')
     await message.answer(f'Привет {message.from_user.first_name}. Начнем!')
     chat_id = message.chat.id
     await send_periodic_messages(bot, chat_id)
@@ -27,8 +28,10 @@ async def get_start(message: Message, bot):
 
 @router.message(Command("today"), F.from_user.id.in_(users))
 async def get_start(message: Message):
+    logger.debug('Получена комманда today')
     quantity = get_quantity_phrases_repeat_today()
     await message.answer(f'ок. сегодня повторяем фраз: {quantity}')
+    logger.debug('Отправленно сообщение с количеством фраз')
 
 
 async def send_periodic_messages(bot, chat_id):
@@ -42,15 +45,15 @@ async def send_periodic_messages(bot, chat_id):
         if start_time <= current_time <= end_time:
             for message in list_message:
                 msg_rus = await bot.send_message(chat_id, message['russian'])
-                logger.debug(f'send message: {msg_rus}')
+                logger.debug(f'send english phrase')
                 time.sleep(60)
                 msg_eng = await bot.send_message(chat_id, message['english'])
-                logger.debug(f'send message: {msg_eng}')
+                logger.debug(f'send russian phrase')
                 time.sleep(900)
                 await bot.delete_message(chat_id=chat_id, message_id=msg_rus.message_id)
-                logger.debug(f'del message: {msg_rus}')
+                logger.debug(f'delete russian phrase')
                 await bot.delete_message(chat_id=chat_id, message_id=msg_eng.message_id)
-                logger.debug(f'del message: {msg_eng}')
+                logger.debug(f'delete english phrase')
 
 
 if __name__ == "__main__":
